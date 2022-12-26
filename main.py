@@ -1,6 +1,6 @@
 import pygame
 import os
-os.chdir(r"C:\Users\japee\Desktop\Pygame\Second Attempt")
+import sys
 
 OGImage = pygame.image.load(os.path.join('Assets', 'stickmanpost2.png'))
 
@@ -23,7 +23,7 @@ class Character(object):  # represents the stickman
         elif key[pygame.K_LEFT]: # left key
             self.x -= dist # move left
         elif key[pygame.K_UP]:
-            self.isJump=True
+            self.y -= dist
         
 
     def draw(self, surface):
@@ -32,34 +32,14 @@ class Character(object):  # represents the stickman
         surface.blit(self.image, (self.x, self.y))
     
     def jump(self):
-        if self.isjump == True:
-        # calculate force (F). F = 1 / 2 * mass * velocity ^ 2.
-         F =(1 / 2)*m*(v**2)
-           
-        # change in the y co-ordinate
-         y-= F
-           
-        # decreasing velocity while going up and become negative while coming down
-         v = v-1
-           
-        # object reached its maximum height
-        if v<0:
-               
-            # negative sign is added to counter negative velocity
-            m =-1
-   
-        # objected reaches its original state
-        if v ==-6:
-   
-            # making isjump equal to false 
-            isjump = False
-  
-     
-            # setting original values to v and m
-            v = 100
-            m = 1
+        if self.isjump:
+            self.y -= 1000
 
-
+    def gravity(self):
+        if self.y < 200:
+            self.y += 0.2
+        else:
+            self.y = 200
 
 pygame.init()
 screen = pygame.display.set_mode((640, 400))
@@ -73,11 +53,13 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit() # quit the screen
+            sys.exit(0)
             running = False
 
     mainCharacter.handle_keys() # handle the keys
 
     screen.fill((255,255,255)) # fill the screen with white
+    mainCharacter.gravity()
     mainCharacter.draw(screen) # draw the bird to the screen
     pygame.display.update() # update the screen
 
